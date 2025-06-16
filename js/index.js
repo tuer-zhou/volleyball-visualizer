@@ -62,10 +62,9 @@ var disableBorders = document.getElementById("disable_borders");
 
 
 
-document.addEventListener("click", mouseClickHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
-
 document.addEventListener("mousedown", mouseDownHandler);
+document.addEventListener("mouseup", mouseUpHandler);
 
 document.addEventListener("keydown", keyPressHandler);
 
@@ -75,14 +74,14 @@ context.textAlign = "center";
 context.textBaseline = "middle";
 
 let selectedPlayer = null;
-let mouseX = 0;
-let mouseY = 0;
-
-function mouseDownHandler(e){
-    console.log(e);
+let mouse = {
+    x:0,
+    y:0,
+    pressed:false
 }
 
-function mouseClickHandler(e){
+function mouseDownHandler(e){
+    mouse.pressed = true;
     const relativeX = e.clientX - canvas.offsetLeft;
     const relativeY = e.clientY - canvas.offsetTop;
     console.log(relativeX + ": " + relativeY);
@@ -99,10 +98,14 @@ function mouseClickHandler(e){
     }
     selectedPlayer = null;
 }
+function mouseUpHandler(e){
+    mouse.pressed = false;
+    selectedPlayer = null;
+}
 
 function mouseMoveHandler(e){
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
 }
 
 function keyPressHandler(e){
@@ -248,8 +251,8 @@ function draw(){
     context.fillStyle = "white";
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     if(selectedPlayer != null){
-        let posX = mouseX;
-        let posY = mouseY;
+        let posX = mouse.x;
+        let posY = mouse.y;
         
         const index = players.findIndex((e) => e == selectedPlayer);
         let borderTop = 0;
