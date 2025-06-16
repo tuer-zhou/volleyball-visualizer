@@ -10,22 +10,22 @@ canvas.style.width = "900px";
 canvas.style.height = "900px";
 
 const radius = 35;
-var systems = {
+const systems = {
     "4:2 alt":[
+        new Player("MB2"),
         new Player("S1"),
         new Player("OH1"),
         new Player("MB1"),
         new Player("S2"),
-        new Player("OH2"),
-        new Player("MB2")
+        new Player("OH2")
     ],
     "4:2":[
+        new Player("OH2"),
         new Player("S1"),
         new Player("MB1"),
         new Player("OH1"),
         new Player("S2"),
-        new Player("MB2"),
-        new Player("OH2")
+        new Player("MB2")
     ],
     "5:1":[
         new Player("S"),
@@ -94,8 +94,8 @@ function mouseUpHandler(e){
 }
 
 function mouseMoveHandler(e){
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    mouse.x = e.clientX - canvas.offsetLeft;
+    mouse.y = e.clientY - canvas.offsetTop;
 }
 
 function keyPressHandler(e){
