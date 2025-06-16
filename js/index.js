@@ -5,6 +5,7 @@ var context = canvas.getContext("2d", { alpha: false });
 const dpr = window.devicePixelRatio;
 context.canvas.width = 900 * dpr;
 context.canvas.height = 900 * dpr;
+const threeMLine = context.canvas.height / 3;
 context.scale(dpr, dpr);
 canvas.style.width = "900px";
 canvas.style.height = "900px";
@@ -110,7 +111,7 @@ function keyPressHandler(e){
 }
 
 
-function drawPlayerSelf(ctx, player){
+function drawPlayer(ctx, player){
     ctx.strokeStyle = player.color;
     ctx.fillStyle = "black";
     ctx.fillText(player.name, player.currentPosition.x, player.currentPosition.y);
@@ -176,37 +177,48 @@ function resetColor(){
     }
 }
 
-function drawBorder(context, borderLeft, borderRight, borderTop, borderBottom){
-    context.strokeStyle = "red";
+function drawBorder(ctx, borderLeft, borderRight, borderTop, borderBottom){
+    ctx.strokeStyle = "red";
 
-    context.beginPath();
+    ctx.beginPath();
 
     // left line
-    context.moveTo(borderLeft, borderTop);
-    context.lineTo(borderRight, borderTop);
-    //context.stroke();
+    ctx.moveTo(borderLeft, borderTop);
+    ctx.lineTo(borderRight, borderTop);
     
     // top line
-    context.moveTo(borderLeft, borderTop);
-    context.lineTo(borderLeft, borderBottom);
-    //context.stroke();
+    ctx.moveTo(borderLeft, borderTop);
+    ctx.lineTo(borderLeft, borderBottom);
 
     // right line
-    context.moveTo(borderRight, borderTop);
-    context.lineTo(borderRight, borderBottom);
-    //context.stroke();
+    ctx.moveTo(borderRight, borderTop);
+    ctx.lineTo(borderRight, borderBottom);
 
     //bottom line
-    context.moveTo(borderLeft, borderBottom);
-    context.lineTo(borderRight, borderBottom);
-    context.stroke();
+    ctx.moveTo(borderLeft, borderBottom);
+    ctx.lineTo(borderRight, borderBottom);
+
+    ctx.stroke();
+}
+
+/**
+ * 
+ * @param {*} ctx 
+ */
+function drawField(ctx){
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = "black";
+    ctx.beginPath();
+    ctx.moveTo(0, threeMLine);
+    ctx.lineTo(ctx.canvas.width, threeMLine);
+    ctx.stroke();
 }
 
 setNewPosition();
 function draw(){
     // draws white rect over whole screen to clean it
-    context.fillStyle = "white";
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    drawField(context);
 
 
     if(selectedPlayer != null){
@@ -275,7 +287,7 @@ function draw(){
     }
     for(let i = 0; i < players.length; i++){
         players[i].move(7);
-        drawPlayerSelf(context, players[i]);
+        drawPlayer(context, players[i]);
     }
     resetColor();
     
