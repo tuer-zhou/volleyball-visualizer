@@ -115,8 +115,8 @@ function drawPlayerSelf(ctx, player){
     ctx.fillStyle = "black";
     ctx.fillText(player.name, player.currentPosition.x, player.currentPosition.y);
     ctx.beginPath();
-    context.arc(player.currentPosition.x, player.currentPosition.y, 35, 0, 2 * Math.PI);
-    context.stroke();
+    ctx.arc(player.currentPosition.x, player.currentPosition.y, radius, 0, 2 * Math.PI);
+    ctx.stroke();
 }
 
 function setNewPosition(){
@@ -178,32 +178,37 @@ function resetColor(){
 
 function drawBorder(context, borderLeft, borderRight, borderTop, borderBottom){
     context.strokeStyle = "red";
+
+    context.beginPath();
+
     // left line
     context.moveTo(borderLeft, borderTop);
     context.lineTo(borderRight, borderTop);
-    context.stroke();
+    //context.stroke();
     
     // top line
     context.moveTo(borderLeft, borderTop);
     context.lineTo(borderLeft, borderBottom);
-    context.stroke();
+    //context.stroke();
 
     // right line
     context.moveTo(borderRight, borderTop);
     context.lineTo(borderRight, borderBottom);
-    context.stroke();
+    //context.stroke();
 
     //bottom line
     context.moveTo(borderLeft, borderBottom);
     context.lineTo(borderRight, borderBottom);
     context.stroke();
-    context.strokeStyle = "black";
 }
 
 setNewPosition();
 function draw(){
+    // draws white rect over whole screen to clean it
     context.fillStyle = "white";
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+
     if(selectedPlayer != null){
         let posX = mouse.x;
         let posY = mouse.y;
