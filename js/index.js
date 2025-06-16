@@ -158,6 +158,11 @@ function prevRotation(){
     
 }
 
+document.getElementById("reset").onclick = reset;
+function reset(){
+    setNewPosition();
+}
+
 document.getElementById("nextBtn").onclick = nextRotation;
 function nextRotation(){
     players.push(players.shift());
