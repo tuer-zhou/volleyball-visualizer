@@ -1,0 +1,12 @@
+body{
+    margin: 0px;
+}
+#myCanvas {
+    border: 1px solid black;
+}
+
+#screen {
+    display: block;
+    margin:auto;
+
+}

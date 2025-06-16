@@ -1,0 +1,331 @@
+import {Player} from "./player.js";
+
+var canvas = document.getElementById("myCanvas");
+var context = canvas.getContext("2d", { alpha: false });
+//context.canvas.width = window.innerWidth*0.80;
+//context.canvas.height = window.innerHeight*0.99;
+const dpr = window.devicePixelRatio;
+context.canvas.width = 900 * dpr;
+context.canvas.height = 900 * dpr;
+context.scale(dpr, dpr);
+canvas.style.width = "900px";
+canvas.style.height = "900px";
+
+const radius = 35;
+var systems = {
+    "4:2 alt":[
+        new Player("S1"),
+        new Player("OH1"),
+        new Player("MB1"),
+        new Player("S2"),
+        new Player("OH2"),
+        new Player("MB2")
+    ],
+    "4:2":[
+        new Player("S1"),
+        new Player("MB1"),
+        new Player("OH1"),
+        new Player("S2"),
+        new Player("MB2"),
+        new Player("OH2")
+    ],
+    "5:1":[
+        new Player("S"),
+        new Player("OH1"),
+        new Player("MB1"),
+        new Player("D"),
+        new Player("OH2"),
+        new Player("MB2")
+    ]
+};
+
+/*var players = [
+    new Player("S"),
+    new Player("OH1"),
+    new Player("MB1"),
+    new Player("D"),
+    new Player("OH2"),
+    new Player("MB2")
+];*/
+let players = systems["5:1"];
+
+var systemSelector = document.getElementById("system");
+systemSelector.onchange = () =>{
+    players = systems[systemSelector.value];
+    setNewPosition();
+    selectedPlayer = null;
+};
+systemSelector.value = "5:1";
+
+var disableBorders = document.getElementById("disable_borders");
+
+
+
+
+document.addEventListener("click", mouseClickHandler);
+document.addEventListener("mousemove", mouseMoveHandler);
+
+document.addEventListener("mousedown", mouseDownHandler);
+
+document.addEventListener("keydown", keyPressHandler);
+
+console.log(players);
+context.font = "30px Arial";
+context.textAlign = "center";
+context.textBaseline = "middle";
+
+let selectedPlayer = null;
+let mouseX = 0;
+let mouseY = 0;
+
+function mouseDownHandler(e){
+    console.log(e);
+}
+
+function mouseClickHandler(e){
+    const relativeX = e.clientX - canvas.offsetLeft;
+    const relativeY = e.clientY - canvas.offsetTop;
+    console.log(relativeX + ": " + relativeY);
+    if(selectedPlayer != null){
+        selectedPlayer = null;
+        return;
+    }
+    for(let player of players){
+        if((player.currentPosition.x-relativeX) ** 2 + (player.currentPosition.y - relativeY)**2 <= radius ** 2){
+            console.log(player);
+            selectedPlayer = player;
+            return;
+        }
+    }
+    selectedPlayer = null;
+}
+
+function mouseMoveHandler(e){
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+}
+
+function keyPressHandler(e){
+    console.log(e.code);
+    if(e.code == "ArrowRight" || e.code == "KeyD"){
+        nextRotation();
+    }else if(e.code == "ArrowLeft" || e.code == "KeyA"){
+        prevRotation();
+    }else if(e.code == "KeyR"){
+        setNewPosition();
+    }
+}
+
+
+/*function drawPlayer(ctx, player, x, y){
+    ctx.fillStyle = "black";
+    ctx.fillText(player.name, x, y);
+    ctx.beginPath();
+    context.arc(x, y, radius, 0, 2 * Math.PI);
+    context.stroke();
+}*/
+
+function drawPlayerSelf(ctx, player){
+    ctx.strokeStyle = player.color;
+    ctx.fillStyle = "black";
+    ctx.fillText(player.name, player.currentPosition.x, player.currentPosition.y);
+    ctx.beginPath();
+    context.arc(player.currentPosition.x, player.currentPosition.y, 35, 0, 2 * Math.PI);
+    context.stroke();
+}
+
+
+
+/*function drawAllPlayers(context, players){
+    //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.fillStyle = "white";
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    for(let i = 0; i < players.length; i++){
+        switch(i){
+            case 0:
+                drawPlayer(context, players[i], (context.canvas.width/6)*5, (context.canvas.height/4)*3);
+                break;
+            case 1:
+                drawPlayer(context, players[i], (context.canvas.width/6)*5, (context.canvas.height/4)*1);
+                break;
+            case 2:
+                drawPlayer(context, players[i], (context.canvas.width/6)*3, (context.canvas.height/4)*1);
+                break;
+            case 3:
+                drawPlayer(context, players[i], (context.canvas.width/6)*1, (context.canvas.height/4)*1);
+                break;
+            case 4:
+                drawPlayer(context, players[i], (context.canvas.width/6)*1, (context.canvas.height/4)*3);
+                break;
+            case 5:
+                drawPlayer(context, players[i], (context.canvas.width/6)*3, (context.canvas.height/4)*3);
+                break;
+        }
+    }
+}*/
+
+function setNewPosition(){
+    for(let i = 0; i < players.length; i++){
+        switch(i){
+            case 0:
+                players[i].newPosition.x = (context.canvas.width/6)*5;
+                players[i].newPosition.y = (context.canvas.height/4)*3;
+                break;
+            case 1:
+                players[i].newPosition.x = (context.canvas.width/6)*5;
+                players[i].newPosition.y = (context.canvas.height/4)*1;
+                break;
+            case 2:
+                players[i].newPosition.x = (context.canvas.width/6)*3;
+                players[i].newPosition.y = (context.canvas.height/4)*1;
+                break;
+            case 3:
+                players[i].newPosition.x = (context.canvas.width/6)*1;
+                players[i].newPosition.y = (context.canvas.height/4)*1;
+                break;
+            case 4:
+                players[i].newPosition.x = (context.canvas.width/6)*1;
+                players[i].newPosition.y = (context.canvas.height/4)*3;
+                break;
+            case 5:
+                players[i].newPosition.x = (context.canvas.width/6)*3;
+                players[i].newPosition.y = (context.canvas.height/4)*3;
+                break;
+        }
+    }
+}
+
+document.getElementById("prevBtn").onclick = prevRotation;
+function prevRotation(){
+    players.unshift(players.pop());
+    //drawAllPlayers(context, players);
+    setNewPosition();
+    console.log("prev rotation");
+    
+}
+
+document.getElementById("nextBtn").onclick = nextRotation;
+function nextRotation(){
+    players.push(players.shift());
+    //drawAllPlayers(context, players);
+    setNewPosition();
+    console.log("next rotation");
+}
+
+function resetColor(){
+    for(let player of players){
+        player.color = "black";
+    }
+}
+
+function drawBorder(context, borderLeft, borderRight, borderTop, borderBottom){
+    context.strokeStyle = "red";
+    // left line
+    context.moveTo(borderLeft, borderTop);
+    context.lineTo(borderRight, borderTop);
+    context.stroke();
+    
+    // top line
+    context.moveTo(borderLeft, borderTop);
+    context.lineTo(borderLeft, borderBottom);
+    context.stroke();
+
+    // right line
+    context.moveTo(borderRight, borderTop);
+    context.lineTo(borderRight, borderBottom);
+    context.stroke();
+
+    //bottom line
+    context.moveTo(borderLeft, borderBottom);
+    context.lineTo(borderRight, borderBottom);
+    context.stroke();
+    context.strokeStyle = "black";
+}
+
+//drawAllPlayers(context, players);
+setNewPosition();
+function draw(){
+    context.fillStyle = "white";
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    if(selectedPlayer != null){
+        let posX = mouseX;
+        let posY = mouseY;
+        
+        const index = players.findIndex((e) => e == selectedPlayer);
+        let borderTop = 0;
+        let borderLeft = 0;
+        let borderBottom= context.canvas.height;
+        let borderRight = context.canvas.width;
+        if(!disableBorders.checked){
+            switch(index){
+                case 0:
+                    borderTop = players[1].currentPosition.y;
+                    borderLeft = players[5].currentPosition.x;
+                    players[1].color = "red";
+                    players[5].color = "red";
+                    break;
+                case 1:
+                    borderBottom = players[0].currentPosition.y;
+                    borderLeft = players[2].currentPosition.x;
+                    players[0].color = "red";
+                    players[2].color = "red";
+                    break;
+                case 2:
+                    borderLeft = players[3].currentPosition.x;
+                    borderBottom = players[5].currentPosition.y;
+                    borderRight = players[1].currentPosition.x;
+                    players[3].color = "red";
+                    players[5].color = "red";
+                    players[1].color = "red";
+                    break;
+                case 3:
+                    borderRight = players[2].currentPosition.x;
+                    borderBottom = players[4].currentPosition.y;
+                    players[2].color = "red";
+                    players[4].color = "red";
+                    break;
+                case 4:
+                    borderTop = players[3].currentPosition.y;
+                    borderRight = players[5].currentPosition.x;
+                    players[3].color = "red";
+                    players[5].color = "red";
+                    break;
+                case 5:
+                    borderLeft = players[4].currentPosition.x;
+                    borderTop = players[2].currentPosition.y;
+                    borderRight = players[0].currentPosition.x;
+                    players[4].color = "red";
+                    players[2].color = "red";
+                    players[0].color = "red";
+                    break;
+            }
+        }
+        
+        posX = Math.min(borderRight-radius, Math.max(borderLeft+radius, posX));
+        posY = Math.min(borderBottom-radius, Math.max(borderTop+radius, posY));
+        drawBorder(context, borderLeft, borderRight, borderTop, borderBottom);
+            
+        selectedPlayer.currentPosition.x = posX;
+        selectedPlayer.currentPosition.y = posY;
+        selectedPlayer.newPosition.x = posX;
+        selectedPlayer.newPosition.y = posY;
+            
+    }
+    for(let i = 0; i < players.length; i++){
+        players[i].move(7);
+        drawPlayerSelf(context, players[i]);
+    }
+    resetColor();
+    
+    window.requestAnimationFrame(draw);
+}
+
+draw();
+
+
+
+/*for(let i = 0; i < window.innerWidth;i++){
+    context.moveTo(0,0);
+    context.lineTo(i, window.innerHeight);
+    context.stroke();
+}*/
