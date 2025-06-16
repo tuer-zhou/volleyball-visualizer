@@ -2,8 +2,6 @@ import {Player} from "./player.js";
 
 var canvas = document.getElementById("myCanvas");
 var context = canvas.getContext("2d", { alpha: false });
-//context.canvas.width = window.innerWidth*0.80;
-//context.canvas.height = window.innerHeight*0.99;
 const dpr = window.devicePixelRatio;
 context.canvas.width = 900 * dpr;
 context.canvas.height = 900 * dpr;
@@ -39,14 +37,6 @@ var systems = {
     ]
 };
 
-/*var players = [
-    new Player("S"),
-    new Player("OH1"),
-    new Player("MB1"),
-    new Player("D"),
-    new Player("OH2"),
-    new Player("MB2")
-];*/
 let players = systems["5:1"];
 
 var systemSelector = document.getElementById("system");
@@ -120,14 +110,6 @@ function keyPressHandler(e){
 }
 
 
-/*function drawPlayer(ctx, player, x, y){
-    ctx.fillStyle = "black";
-    ctx.fillText(player.name, x, y);
-    ctx.beginPath();
-    context.arc(x, y, radius, 0, 2 * Math.PI);
-    context.stroke();
-}*/
-
 function drawPlayerSelf(ctx, player){
     ctx.strokeStyle = player.color;
     ctx.fillStyle = "black";
@@ -136,36 +118,6 @@ function drawPlayerSelf(ctx, player){
     context.arc(player.currentPosition.x, player.currentPosition.y, 35, 0, 2 * Math.PI);
     context.stroke();
 }
-
-
-
-/*function drawAllPlayers(context, players){
-    //context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.fillStyle = "white";
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-    for(let i = 0; i < players.length; i++){
-        switch(i){
-            case 0:
-                drawPlayer(context, players[i], (context.canvas.width/6)*5, (context.canvas.height/4)*3);
-                break;
-            case 1:
-                drawPlayer(context, players[i], (context.canvas.width/6)*5, (context.canvas.height/4)*1);
-                break;
-            case 2:
-                drawPlayer(context, players[i], (context.canvas.width/6)*3, (context.canvas.height/4)*1);
-                break;
-            case 3:
-                drawPlayer(context, players[i], (context.canvas.width/6)*1, (context.canvas.height/4)*1);
-                break;
-            case 4:
-                drawPlayer(context, players[i], (context.canvas.width/6)*1, (context.canvas.height/4)*3);
-                break;
-            case 5:
-                drawPlayer(context, players[i], (context.canvas.width/6)*3, (context.canvas.height/4)*3);
-                break;
-        }
-    }
-}*/
 
 function setNewPosition(){
     for(let i = 0; i < players.length; i++){
@@ -201,7 +153,6 @@ function setNewPosition(){
 document.getElementById("prevBtn").onclick = prevRotation;
 function prevRotation(){
     players.unshift(players.pop());
-    //drawAllPlayers(context, players);
     setNewPosition();
     console.log("prev rotation");
     
@@ -210,7 +161,6 @@ function prevRotation(){
 document.getElementById("nextBtn").onclick = nextRotation;
 function nextRotation(){
     players.push(players.shift());
-    //drawAllPlayers(context, players);
     setNewPosition();
     console.log("next rotation");
 }
@@ -245,7 +195,6 @@ function drawBorder(context, borderLeft, borderRight, borderTop, borderBottom){
     context.strokeStyle = "black";
 }
 
-//drawAllPlayers(context, players);
 setNewPosition();
 function draw(){
     context.fillStyle = "white";
@@ -324,11 +273,3 @@ function draw(){
 }
 
 draw();
-
-
-
-/*for(let i = 0; i < window.innerWidth;i++){
-    context.moveTo(0,0);
-    context.lineTo(i, window.innerHeight);
-    context.stroke();
-}*/
