@@ -1,5 +1,6 @@
 import { systems, serve, receive, release, defense } from "./consts.js";
 import { mouse } from "./input.js";
+import { Ball } from "./ball.js";
 
 export var canvas = document.getElementById("myCanvas");
 export var context = canvas.getContext("2d", { alpha: true });
@@ -14,6 +15,7 @@ context.translate(radius*2,radius*2);
 canvas.style.width = "900px";
 canvas.style.height = "900px";
 
+let ball = new Ball(20);
 
 export const States = {
     None:"None",
@@ -274,6 +276,9 @@ function draw(){
     // draws white rect over whole screen to clean it
     drawField(context);
     writeSettings();
+
+    ball.newPosition(mouse);
+    ball.draw(context);
 
     if(selectedPlayer != null){
         let posX = mouse.x;
