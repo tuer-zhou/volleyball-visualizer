@@ -6,32 +6,51 @@
     </head>
     <body>
         <div id="screen">
-            <input type="text">
-            <select id="system">
-                <option>5:1</option>
-                <option>4:2</option>
-                <option>4:2 alt</option>
-            </select>
-            <button id="prevBtn">previous rotation</button>
-            <button id="reset">reset</button>
-            <button id="nextBtn">next rotation</button>
-            |
-            <button id="service">Service</button>
-            <button id="receive">Receive</button>
-            <button id="release">Release</button>
-            <!--|
-            <button id="attack">Attack</button>
-            <button id="neutral">Neutral</button>
-            <button id="defense">Defense Left</button>
-            <button id="defense">Defense Middle</button>
-            <button id="defense">Defense Right</button>-->
-            |
-            <input type="checkbox" id="disable_borders" name="borders">
-            <label for="borders">Disable borders</label>
-            <br>
             <canvas id="myCanvas" >
     
             </canvas>
+            <div id="settings">
+                <div id="currentSettings">
+                    <div>
+                        <span id="system"></span>
+                    </div>
+                    <div>
+                        State: <span id="mode"></spa>
+                    </div>
+                    <div>
+                        Rotation: <span id="rotation"></span>
+                    </div>
+                </div>
+                <hr>
+                <input type="text">
+                <button>Save</button>
+                <br>
+                <select id="system">
+                    <option>5:1</option>
+                    <option>4:2</option>
+                    <option>4:2 alt</option>
+                </select>
+                <input id="speed" type="number" value="8" placeholder="speed"/>
+                <hr>
+                <button id="prevBtn">previous rotation</button>
+                <button id="reset">reset</button>
+                <button id="nextBtn">next rotation</button>
+                <hr>
+                <button id="service">Service</button>
+                <button id="receive">Receive</button>
+                <button id="release">Release</button>
+                <hr>
+                <button id="attack">Attack</button>
+                <!--<button id="neutral">Neutral</button>-->
+                <button id="defenseLeft">Defense Left</button>
+                <button id="defenseMiddle">Defense Middle</button>
+                <button id="defenseRight">Defense Right</button>
+                <br>
+                <input type="checkbox" id="disable_borders" name="borders">
+                <label for="borders">Disable borders</label>
+                <br>
+                
+            </div>
         </div>
     </body>
 </html>

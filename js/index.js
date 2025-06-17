@@ -1,17 +1,19 @@
-import { systems, serve, receive, release } from "./consts.js";
+import { systems, serve, receive, release, defense } from "./consts.js";
 import { mouse } from "./input.js";
 
 export var canvas = document.getElementById("myCanvas");
-var context = canvas.getContext("2d", { alpha: false });
+export var context = canvas.getContext("2d", { alpha: true });
 const dpr = window.devicePixelRatio;
-context.canvas.width = 900 * dpr;
-context.canvas.height = 900 * dpr;
+context.canvas.width = 900;
+context.canvas.height = 900;
 const threeMLine = context.canvas.height / 3;
-context.scale(dpr, dpr);
+//context.scale(dpr, dpr);
+context.scale(0.865384615, 0.865384615);
+const radius = 35;
+context.translate(radius*2,radius*2);
 canvas.style.width = "900px";
 canvas.style.height = "900px";
 
-const radius = 35;
 
 export const States = {
     None:"None",
@@ -23,6 +25,8 @@ export const States = {
 export let players = systems["5:1"];
 let rotation = 1;
 let lastState = States.None;
+
+const speed = document.getElementById("speed");
 
 
 var systemSelector = document.getElementById("system");
@@ -53,8 +57,10 @@ let selectedPlayer = null;
 
 function mouseDownHandler(e){
     mouse.pressed = true;
-    const relativeX = e.clientX - canvas.offsetLeft;
-    const relativeY = e.clientY - canvas.offsetTop;
+    //const relativeX = e.clientX - canvas.offsetLeft;
+    //const relativeY = e.clientY - canvas.offsetTop;
+    const relativeX = mouse.x;
+    const relativeY = mouse.y;
     console.log(relativeX + ": " + relativeY);
     if(selectedPlayer != null){
         selectedPlayer = null;
@@ -110,6 +116,15 @@ export function setReleasePositions(){
     
 }
 
+export function setDefenseLeftPositions(){
+    console.log("Defense left")
+    disableBorders.checked = true;
+    for(let i = 0; i < players.length; i++){
+        players[i].newPosition.x = defense["left"][systemSelector.value][lastState][rotation][i].x;
+        players[i].newPosition.y = defense["left"][systemSelector.value][lastState][rotation][i].y;
+    }
+}
+
 export function prevRotation(){
     players.unshift(players.pop());
     setNewPosition();
@@ -142,6 +157,8 @@ function keyPressHandler(e){
         setReceivePositions();
     }else if(e.code == "KeyQ"){
         setReleasePositions();
+    }else if(e.code == "KeyB"){
+        disableBorders.checked = !disableBorders.checked;
     }
 }
 
@@ -217,25 +234,46 @@ function drawBorder(ctx, borderLeft, borderRight, borderTop, borderBottom){
     ctx.stroke();
 }
 
+function writeSettings(){
+    //document.getElementById("system").textContent = systemSelector.value;
+    document.getElementById("mode").textContent = lastState;
+    document.getElementById("rotation").textContent = rotation;
+}
+
 /**
  * 
  * @param {*} ctx 
  */
 function drawField(ctx){
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillRect(-radius*2, -radius*2, ctx.canvas.width+radius*4, ctx.canvas.height+radius*4);
     ctx.strokeStyle = "black";
     ctx.beginPath();
     ctx.moveTo(0, threeMLine);
     ctx.lineTo(ctx.canvas.width, threeMLine);
+
+    ctx.moveTo(-radius, 0);
+    ctx.lineTo(ctx.canvas.width+radius, 0);
+
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, ctx.canvas.height);
+
+    ctx.moveTo(ctx.canvas.width, 0);
+    ctx.lineTo(ctx.canvas.width, ctx.canvas.height);
+
+    ctx.moveTo(0, ctx.canvas.height);
+    ctx.lineTo(ctx.canvas.width, ctx.canvas.height);
+
     ctx.stroke();
+    ctx.fillStyle = "black";
+    ctx.fillText("Net", ctx.canvas.width/2, -radius);
 }
 
 setNewPosition();
 function draw(){
     // draws white rect over whole screen to clean it
     drawField(context);
-
+    writeSettings();
 
     if(selectedPlayer != null){
         let posX = mouse.x;
@@ -289,11 +327,11 @@ function draw(){
                     players[0].color = "red";
                     break;
             }
+            posX = Math.min(borderRight-radius, Math.max(borderLeft+radius, posX));
+            posY = Math.min(borderBottom-radius, Math.max(borderTop+radius, posY));
+            drawBorder(context, borderLeft, borderRight, borderTop, borderBottom);
         }
         
-        posX = Math.min(borderRight-radius, Math.max(borderLeft+radius, posX));
-        posY = Math.min(borderBottom-radius, Math.max(borderTop+radius, posY));
-        drawBorder(context, borderLeft, borderRight, borderTop, borderBottom);
             
         selectedPlayer.currentPosition.x = posX;
         selectedPlayer.currentPosition.y = posY;
@@ -302,7 +340,7 @@ function draw(){
             
     }
     for(let i = 0; i < players.length; i++){
-        players[i].move(8);
+        players[i].move(parseInt((speed.value)? speed.value : 8));
         drawPlayer(context, players[i]);
     }
     resetColor();

@@ -1,12 +1,23 @@
 body{
     margin: 0px;
+    font-size: 1.5em;
 }
 #myCanvas {
     border: 1px solid black;
 }
 
 #screen {
-    display: block;
+    display: flex;
     margin:auto;
 
+}
+
+#settings {
+    padding-left: 10px;
+}
+
+button {
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+    font-size: 0.8em;
 }
