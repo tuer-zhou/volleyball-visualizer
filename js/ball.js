@@ -5,7 +5,7 @@ export class Ball{
         this.selected = false;
     }
 
-    draw(ctx, frames){
+    draw(ctx, time){
         ctx.beginPath();
         //ctx.moveTo(this.position.x, this.position.y);
         ctx.fillStyle = "yellow";
@@ -15,9 +15,10 @@ export class Ball{
         ctx.closePath();
         ctx.stroke();
         
+        // tries to make the fancy design
         ctx.strokeStyle="blue";
         ctx.lineWidth = 5;
-        let offset = frames / 10000;
+        let offset = time / 10000;
         let slices = 6;
         let sector = 2*Math.PI/slices;
         for(let i = 0; i <= 6; i+=2){

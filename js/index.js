@@ -1,117 +1,38 @@
-import { systems, serve, receive, release, defense } from "./consts.js";
+import { systems, serve, receive, release, defense, States } from "./consts.js";
 import { mouse } from "./input.js";
 import { Ball } from "./ball.js";
+import { speed, systemSelector, disableBorders } from "./buttons.js";
+import { global } from "./global.js";
+
 
 export var canvas = document.getElementById("myCanvas");
 export var context = canvas.getContext("2d", { alpha: true });
 const dpr = window.devicePixelRatio;
 context.canvas.width = 900;
 context.canvas.height = 900;
-const threeMLine = context.canvas.height / 3;
-//context.scale(dpr, dpr);
+
+// to fit 1040 (2 * radius + 900 + 2 * radius) into 900
 context.scale(0.865384615, 0.865384615);
-const radius = 35;
+export const radius = 35;
 context.translate(radius*2,radius*2);
 canvas.style.width = "900px";
 canvas.style.height = "900px";
 
 let ball = new Ball(20);
 
-export const States = {
-    None:"None",
-    Receive:"Receive",
-    Service:"Service"
-}
+
 
 
 export let players = systems["5:1"];
 let rotation = 1;
 let lastState = States.None;
 
-const speed = document.getElementById("speed");
-
-
-var systemSelector = document.getElementById("system");
-systemSelector.onchange = () =>{
-    players = systems[systemSelector.value];
-    setNewPosition();
-    selectedPlayer = null;
-};
-systemSelector.value = "5:1";
-
-var disableBorders = document.getElementById("disable_borders");
-disableBorders.checked = false;
-
-
-document.addEventListener("touchstart", touchStartHandler);
-document.addEventListener("touchend", touchEndHandler);
-
-
-
-document.addEventListener("mousedown", mouseDownHandler);
-document.addEventListener("mouseup", mouseUpHandler);
-
-document.addEventListener("keydown", keyPressHandler);
 
 console.log(players);
 context.font = "30px Arial";
 context.textAlign = "center";
 context.textBaseline = "middle";
 
-let selectedPlayer = null;
-
-function touchStartHandler(e){
-    for(let touch of e.changedTouches){
-        //mouseDownHandler(touch);
-        new MouseEvent("mousedown", {
-            clientX:touch.clientX,
-            clientY:touch.clientY
-        });
-        break;
-    }
-}
-
-function touchEndHandler(e){
-    for(let touch of e.changedTouches){
-        //mouseUpHandler(touch);
-        new MouseEvent("mouseup", {
-            clientX:touch.clientX,
-            clientY:touch.clientY
-        });
-        break;
-    }
-}
-
-function mouseDownHandler(e){
-    mouse.pressed = true;
-    //const relativeX = e.clientX - canvas.offsetLeft;
-    //const relativeY = e.clientY - canvas.offsetTop;
-    const relativeX = mouse.x;
-    const relativeY = mouse.y;
-    console.log(relativeX + ": " + relativeY);
-    if(selectedPlayer != null){
-        selectedPlayer = null;
-        return;
-    }
-    for(let player of players){
-        if((player.currentPosition.x-relativeX) ** 2 + (player.currentPosition.y - relativeY)**2 <= radius ** 2){
-            console.log(player);
-            selectedPlayer = player;
-            return;
-        }
-    }
-    selectedPlayer = null;
-}
-function mouseUpHandler(e){
-    mouse.pressed = false;
-    selectedPlayer = null;
-    let s = "";
-    for(let player of players){
-        s += "{x:"+player.currentPosition.x+", y:"+player.currentPosition.y+"},\n";
-    }
-    console.log(s);
-    console.log(rotation)
-}
 
 export function setServicePositions(){
     console.log("service")
@@ -172,34 +93,7 @@ export function nextRotation(){
     rotation = (rotation+6-2)%6+1;
 }
 
-function keyPressHandler(e){
-    console.log(e.code);
-    if(e.code == "ArrowRight" || e.code == "KeyD"){
-        nextRotation();
-    }else if(e.code == "ArrowLeft" || e.code == "KeyA"){
-        prevRotation();
-    }else if(e.code == "KeyR"){
-        reset();
-    }else if(e.code == "KeyW" || e.code == "ArrowUp"){
-        setServicePositions();
-    }else if(e.code == "KeyS" || e.code == "ArrowDown"){
-        setReceivePositions();
-    }else if(e.code == "KeyQ"){
-        setReleasePositions();
-    }else if(e.code == "KeyB"){
-        disableBorders.checked = !disableBorders.checked;
-    }
-}
 
-
-function drawPlayer(ctx, player){
-    ctx.strokeStyle = player.color;
-    ctx.fillStyle = "black";
-    ctx.fillText(player.name, player.currentPosition.x, player.currentPosition.y);
-    ctx.beginPath();
-    ctx.arc(player.currentPosition.x, player.currentPosition.y, radius, 0, 2 * Math.PI);
-    ctx.stroke();
-}
 
 function setNewPosition(){
     lastState = States.None;
@@ -230,12 +124,6 @@ function setNewPosition(){
                 players[i].newPosition.y = (context.canvas.height/4)*3;
                 break;
         }
-    }
-}
-
-function resetColor(){
-    for(let player of players){
-        player.color = "black";
     }
 }
 
@@ -278,8 +166,8 @@ function drawField(ctx){
     ctx.fillRect(-radius*2, -radius*2, ctx.canvas.width+radius*4, ctx.canvas.height+radius*4);
     ctx.strokeStyle = "black";
     ctx.beginPath();
-    ctx.moveTo(0, threeMLine);
-    ctx.lineTo(ctx.canvas.width, threeMLine);
+    ctx.moveTo(0, ctx.canvas.height/3);
+    ctx.lineTo(ctx.canvas.width, ctx.canvas.height/3);
 
     ctx.moveTo(-radius, 0);
     ctx.lineTo(ctx.canvas.width+radius, 0);
@@ -307,11 +195,11 @@ function draw(time){
     ball.move(mouse);
     ball.draw(context, time);
 
-    if(selectedPlayer != null){
+    if(global.selectedPlayer != null){
         let posX = mouse.x;
         let posY = mouse.y;
         
-        const index = players.findIndex((e) => e == selectedPlayer);
+        const index = players.findIndex((e) => e == global.selectedPlayer);
         let borderTop = 0;
         let borderLeft = 0;
         let borderBottom= context.canvas.height;
@@ -366,17 +254,18 @@ function draw(time){
         posX = Math.min(canvas.width+radius, Math.max(0-radius, posX));
         posY = Math.min(canvas.height+radius, Math.max(0-radius, posY));
             
-        selectedPlayer.currentPosition.x = posX;
-        selectedPlayer.currentPosition.y = posY;
-        selectedPlayer.newPosition.x = posX;
-        selectedPlayer.newPosition.y = posY;
+        global.selectedPlayer.currentPosition.x = posX;
+        global.selectedPlayer.currentPosition.y = posY;
+        global.selectedPlayer.newPosition.x = posX;
+        global.selectedPlayer.newPosition.y = posY;
             
     }
     for(let i = 0; i < players.length; i++){
         players[i].move(parseInt((speed.value)? speed.value : 8));
-        drawPlayer(context, players[i]);
+        players[i].draw(context);
+        // resets the color after being drawn
+        players[i].color = "black";
     }
-    resetColor();
     
     window.requestAnimationFrame(draw);
 }

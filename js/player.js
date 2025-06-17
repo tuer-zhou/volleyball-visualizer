@@ -1,3 +1,5 @@
+import { radius } from "./index.js";
+
 export class Player {
     constructor(name){
         this.name = name;
@@ -18,28 +20,27 @@ export class Player {
             this.currentPosition.x = this.newPosition.x;
         }else{
             this.currentPosition.x += v.x*steps;
-            /*if(this.currentPosition.x < this.newPosition.x){
-                this.currentPosition.x += Math.round(v.x*steps);
-            }else{
-                this.currentPosition.x -= Math.round(v.x*steps);
-            }*/
         }
 
         if(this.newPosition.y - steps <= this.currentPosition.y && this.currentPosition.y <= this.newPosition.y + steps){
             this.currentPosition.y = this.newPosition.y;
         }else{
             this.currentPosition.y += v.y * steps;
-            /*if(this.currentPosition.y < this.newPosition.y){
-                this.currentPosition.y += Math.round(v.y * steps);
-            }else{
-                this.currentPosition.y -= Math.round(v.y * steps);
-            }*/
         }
     }
 
     setNewPosition(x, y){
         this.newPosition.x = x;
         this.newPosition.y = y; 
+    }
+
+    draw(ctx){
+        ctx.strokeStyle = this.color;
+        ctx.fillStyle = "black";
+        ctx.fillText(this.name, this.currentPosition.x, this.currentPosition.y);
+        ctx.beginPath();
+        ctx.arc(this.currentPosition.x, this.currentPosition.y, radius, 0, 2 * Math.PI);
+        ctx.stroke();
     }
 
 }

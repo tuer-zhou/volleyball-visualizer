@@ -1,5 +1,11 @@
 import {Player} from "./player.js";
 
+export const States = {
+    None:"None",
+    Receive:"Receive",
+    Service:"Service"
+}
+
 export const systems = {
     "4:2 alt":[
         new Player("MB2"),
