@@ -338,7 +338,8 @@ function draw(time){
             posY = Math.min(borderBottom-radius, Math.max(borderTop+radius, posY));
             drawBorder(context, borderLeft, borderRight, borderTop, borderBottom);
         }
-        
+        posX = Math.min(canvas.width+radius, Math.max(0-radius, posX));
+        posY = Math.min(canvas.height+radius, Math.max(0-radius, posY));
             
         selectedPlayer.currentPosition.x = posX;
         selectedPlayer.currentPosition.y = posY;
