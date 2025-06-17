@@ -42,16 +42,22 @@ export class Ball{
         
     }
 
-    newPosition(mouse){
+    move(mouse){
         if(mouse.pressed & (this.position.x - mouse.x)**2+(this.position.y - mouse.y)**2 <= this.radius**2){
             this.selected = true;
         }
         if(!mouse.pressed){
             this.selected = false;
+            console.log("ball:" + this.position.x + ": "+this.position.y);
         }
         if(this.selected){
             this.position.x = mouse.x;
             this.position.y = mouse.y;
         }
+    }
+
+    setPosition(x, y){
+        this.position.x = x;
+        this.position.y = y;
     }
 }

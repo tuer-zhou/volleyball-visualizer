@@ -91,6 +91,7 @@ function mouseUpHandler(e){
 export function setServicePositions(){
     console.log("service")
     lastState = States.Service;
+    ball.setPosition(770, 900);
     for(let i = 0; i < players.length; i++){
         players[i].newPosition.x = serve[systemSelector.value][rotation][i].x;
         players[i].newPosition.y = serve[systemSelector.value][rotation][i].y;
@@ -121,6 +122,7 @@ export function setReleasePositions(){
 export function setDefenseLeftPositions(){
     console.log("Defense left")
     disableBorders.checked = true;
+    ball.setPosition(130, -30);
     for(let i = 0; i < players.length; i++){
         players[i].newPosition.x = defense["left"][systemSelector.value][lastState][rotation][i].x;
         players[i].newPosition.y = defense["left"][systemSelector.value][lastState][rotation][i].y;
@@ -277,7 +279,7 @@ function draw(time){
     drawField(context);
     writeSettings();
 
-    ball.newPosition(mouse);
+    ball.move(mouse);
     ball.draw(context, time);
 
     if(selectedPlayer != null){
