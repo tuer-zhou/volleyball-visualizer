@@ -24,7 +24,7 @@ let ball = new Ball(20);
 
 
 export let players = systems["5:1"];
-let rotation = 1;
+export let rotation = 1;
 let lastState = States.None;
 
 

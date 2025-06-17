@@ -1,5 +1,5 @@
 import { mouse } from "./input.js";
-import { prevRotation,canvas, context, players, radius, nextRotation, setServicePositions, setReceivePositions, setReleasePositions, reset } from "./index.js";
+import { prevRotation,canvas, context, players, radius, nextRotation, setServicePositions, setReceivePositions, setReleasePositions, reset, rotation } from "./index.js";
 import { global } from "./global.js";
 import { disableBorders } from "./buttons.js";
 
