@@ -43,7 +43,7 @@ var disableBorders = document.getElementById("disable_borders");
 disableBorders.checked = false;
 
 
-
+document.addEventListener("touchstart", mouseDownHandler);
 document.addEventListener("mousedown", mouseDownHandler);
 document.addEventListener("mouseup", mouseUpHandler);
 
