@@ -117,6 +117,7 @@ export function prevRotation(){
     rotation = rotation % 6 + 1;
 }
 export function reset(){
+    disableBorders.checked = false;
     setNewPosition();
     console.log("reset");
 }
@@ -134,7 +135,13 @@ function keyPressHandler(e){
     }else if(e.code == "ArrowLeft" || e.code == "KeyA"){
         prevRotation();
     }else if(e.code == "KeyR"){
-        setNewPosition();
+        reset();
+    }else if(e.code == "KeyW" || e.code == "ArrowUp"){
+        setServicePositions();
+    }else if(e.code == "KeyS" || e.code == "ArrowDown"){
+        setReceivePositions();
+    }else if(e.code == "KeyQ"){
+        setReleasePositions();
     }
 }
 
@@ -295,7 +302,7 @@ function draw(){
             
     }
     for(let i = 0; i < players.length; i++){
-        players[i].move(7);
+        players[i].move(8);
         drawPlayer(context, players[i]);
     }
     resetColor();

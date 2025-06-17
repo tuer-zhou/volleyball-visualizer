@@ -7,24 +7,33 @@ export class Player {
     }
 
     move(steps){
+        let v = {
+            x:this.newPosition.x-this.currentPosition.x, 
+            y:this.newPosition.y - this.currentPosition.y
+        };
+        const mag = Math.sqrt((v.x)**2+(v.y)**2)
+        v.x = v.x/mag;
+        v.y = v.y/mag;
         if(this.newPosition.x - steps <= this.currentPosition.x && this.currentPosition.x <= this.newPosition.x + steps){
             this.currentPosition.x = this.newPosition.x;
         }else{
-            if(this.currentPosition.x < this.newPosition.x){
-                this.currentPosition.x += steps;
+            this.currentPosition.x += v.x*steps;
+            /*if(this.currentPosition.x < this.newPosition.x){
+                this.currentPosition.x += Math.round(v.x*steps);
             }else{
-                this.currentPosition.x -= steps;
-            }
+                this.currentPosition.x -= Math.round(v.x*steps);
+            }*/
         }
 
         if(this.newPosition.y - steps <= this.currentPosition.y && this.currentPosition.y <= this.newPosition.y + steps){
             this.currentPosition.y = this.newPosition.y;
         }else{
-            if(this.currentPosition.y < this.newPosition.y){
-                this.currentPosition.y += steps;
+            this.currentPosition.y += v.y * steps;
+            /*if(this.currentPosition.y < this.newPosition.y){
+                this.currentPosition.y += Math.round(v.y * steps);
             }else{
-                this.currentPosition.y -= steps;
-            }
+                this.currentPosition.y -= Math.round(v.y * steps);
+            }*/
         }
     }
 
