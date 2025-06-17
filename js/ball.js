@@ -48,7 +48,7 @@ export class Ball{
         }
         if(!mouse.pressed){
             this.selected = false;
-            console.log("ball:" + this.position.x + ": "+this.position.y);
+            //console.log("ball:" + this.position.x + ": "+this.position.y);
         }
         if(this.selected){
             this.position.x = mouse.x;

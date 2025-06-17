@@ -6,6 +6,15 @@ export let mouse = {
     pressed:false
 }
 
+document.addEventListener("touchmove", touchMoveHandler);
+
+function touchMoveHandler(e){
+    for(let touch of e.changedTouches){
+        mouseMoveHandler(touch);
+        break;
+    }
+}
+
 document.addEventListener("mousemove", mouseMoveHandler);
 function mouseMoveHandler(e){
     /*mouse.x = e.clientX - canvas.offsetLeft;

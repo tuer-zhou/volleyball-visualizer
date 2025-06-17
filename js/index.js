@@ -43,7 +43,11 @@ var disableBorders = document.getElementById("disable_borders");
 disableBorders.checked = false;
 
 
-document.addEventListener("touchstart", mouseDownHandler);
+document.addEventListener("touchstart", touchStartHandler);
+document.addEventListener("touchend", touchEndHandler);
+
+
+
 document.addEventListener("mousedown", mouseDownHandler);
 document.addEventListener("mouseup", mouseUpHandler);
 
@@ -56,6 +60,19 @@ context.textBaseline = "middle";
 
 let selectedPlayer = null;
 
+function touchStartHandler(e){
+    for(let touch of e.changedTouches){
+        mouseDownHandler(touch);
+        break;
+    }
+}
+
+function touchEndHandler(e){
+    for(let touch of e.changedTouches){
+        mouseUpHandler(touch);
+        break;
+    }
+}
 
 function mouseDownHandler(e){
     mouse.pressed = true;
