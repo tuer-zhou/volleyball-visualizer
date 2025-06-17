@@ -272,13 +272,13 @@ function drawField(ctx){
 }
 
 setNewPosition();
-function draw(){
+function draw(time){
     // draws white rect over whole screen to clean it
     drawField(context);
     writeSettings();
 
     ball.newPosition(mouse);
-    ball.draw(context);
+    ball.draw(context, time);
 
     if(selectedPlayer != null){
         let posX = mouse.x;
