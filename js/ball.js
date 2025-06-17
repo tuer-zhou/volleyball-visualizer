@@ -6,11 +6,27 @@ export class Ball{
 
     draw(ctx){
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        //ctx.moveTo(this.position.x, this.position.y);
         ctx.fillStyle = "yellow";
-        ctx.fill();
+        for(let i = 0; i < 6; i+=2){
+            ctx.arc(this.position.x, this.position.y, this.radius, (2 * Math.PI/6) * i, (2 * Math.PI/6) * (i+1));
+            ctx.fill();
+        }
+
+        
+        
         ctx.strokeStyle="black";
+        ctx.closePath();
         ctx.stroke();
+
+        ctx.fillStyle = "blue";
+        for(let i = 1; i < 6; i+=2){
+            ctx.beginPath();
+            ctx.arc(this.position.x, this.position.y, this.radius, (2 * Math.PI/6) * i, (2 * Math.PI/6) * (i+1));
+            ctx.fill();
+            ctx.stroke();
+        }
+        
     }
 
     newPosition(mouse){
