@@ -62,14 +62,22 @@ let selectedPlayer = null;
 
 function touchStartHandler(e){
     for(let touch of e.changedTouches){
-        mouseDownHandler(touch);
+        //mouseDownHandler(touch);
+        new MouseEvent("mousedown", {
+            clientX:touch.clientX,
+            clientY:touch.clientY
+        });
         break;
     }
 }
 
 function touchEndHandler(e){
     for(let touch of e.changedTouches){
-        mouseUpHandler(touch);
+        //mouseUpHandler(touch);
+        new MouseEvent("mouseup", {
+            clientX:touch.clientX,
+            clientY:touch.clientY
+        });
         break;
     }
 }

@@ -10,7 +10,11 @@ document.addEventListener("touchmove", touchMoveHandler);
 
 function touchMoveHandler(e){
     for(let touch of e.changedTouches){
-        mouseMoveHandler(touch);
+        //mouseMoveHandler(touch);
+        new MouseEvent("mousemove", {
+            clientX:touch.clientX,
+            clientY:touch.clientY
+        });
         break;
     }
 }
