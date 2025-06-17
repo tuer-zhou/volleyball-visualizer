@@ -1,6 +1,7 @@
-import {Player} from "./player.js";
+import { systems, serve, receive, release } from "./consts.js";
+import { mouse } from "./input.js";
 
-var canvas = document.getElementById("myCanvas");
+export var canvas = document.getElementById("myCanvas");
 var context = canvas.getContext("2d", { alpha: false });
 const dpr = window.devicePixelRatio;
 context.canvas.width = 900 * dpr;
@@ -11,34 +12,18 @@ canvas.style.width = "900px";
 canvas.style.height = "900px";
 
 const radius = 35;
-const systems = {
-    "4:2 alt":[
-        new Player("MB2"),
-        new Player("S1"),
-        new Player("OH1"),
-        new Player("MB1"),
-        new Player("S2"),
-        new Player("OH2")
-    ],
-    "4:2":[
-        new Player("OH2"),
-        new Player("S1"),
-        new Player("MB1"),
-        new Player("OH1"),
-        new Player("S2"),
-        new Player("MB2")
-    ],
-    "5:1":[
-        new Player("S"),
-        new Player("OH1"),
-        new Player("MB1"),
-        new Player("D"),
-        new Player("OH2"),
-        new Player("MB2")
-    ]
-};
 
-let players = systems["5:1"];
+export const States = {
+    None:"None",
+    Receive:"Receive",
+    Service:"Service"
+}
+
+
+export let players = systems["5:1"];
+let rotation = 1;
+let lastState = States.None;
+
 
 var systemSelector = document.getElementById("system");
 systemSelector.onchange = () =>{
@@ -49,11 +34,10 @@ systemSelector.onchange = () =>{
 systemSelector.value = "5:1";
 
 var disableBorders = document.getElementById("disable_borders");
+disableBorders.checked = false;
 
 
 
-
-document.addEventListener("mousemove", mouseMoveHandler);
 document.addEventListener("mousedown", mouseDownHandler);
 document.addEventListener("mouseup", mouseUpHandler);
 
@@ -65,11 +49,7 @@ context.textAlign = "center";
 context.textBaseline = "middle";
 
 let selectedPlayer = null;
-let mouse = {
-    x:0,
-    y:0,
-    pressed:false
-}
+
 
 function mouseDownHandler(e){
     mouse.pressed = true;
@@ -92,11 +72,59 @@ function mouseDownHandler(e){
 function mouseUpHandler(e){
     mouse.pressed = false;
     selectedPlayer = null;
+    let s = "";
+    for(let player of players){
+        s += "{x:"+player.currentPosition.x+", y:"+player.currentPosition.y+"},\n";
+    }
+    console.log(s);
+    console.log(rotation)
 }
 
-function mouseMoveHandler(e){
-    mouse.x = e.clientX - canvas.offsetLeft;
-    mouse.y = e.clientY - canvas.offsetTop;
+export function setServicePositions(){
+    console.log("service")
+    lastState = States.Service;
+    for(let i = 0; i < players.length; i++){
+        players[i].newPosition.x = serve[systemSelector.value][rotation][i].x;
+        players[i].newPosition.y = serve[systemSelector.value][rotation][i].y;
+    }
+    
+}
+
+export function setReceivePositions(){
+    console.log("receive")
+    lastState = States.Receive;
+    for(let i = 0; i < players.length; i++){
+        players[i].newPosition.x = receive[systemSelector.value][rotation][i].x;
+        players[i].newPosition.y = receive[systemSelector.value][rotation][i].y;
+    }
+    
+}
+
+export function setReleasePositions(){
+    console.log("Release")
+    disableBorders.checked = true;
+    for(let i = 0; i < players.length; i++){
+        players[i].newPosition.x = release[systemSelector.value][lastState][rotation][i].x;
+        players[i].newPosition.y = release[systemSelector.value][lastState][rotation][i].y;
+    }
+    
+}
+
+export function prevRotation(){
+    players.unshift(players.pop());
+    setNewPosition();
+    console.log("prev rotation");
+    rotation = rotation % 6 + 1;
+}
+export function reset(){
+    setNewPosition();
+    console.log("reset");
+}
+export function nextRotation(){
+    players.push(players.shift());
+    setNewPosition();
+    console.log("next rotation");
+    rotation = (rotation+6-2)%6+1;
 }
 
 function keyPressHandler(e){
@@ -121,6 +149,7 @@ function drawPlayer(ctx, player){
 }
 
 function setNewPosition(){
+    lastState = States.None;
     for(let i = 0; i < players.length; i++){
         switch(i){
             case 0:
@@ -149,26 +178,6 @@ function setNewPosition(){
                 break;
         }
     }
-}
-
-document.getElementById("prevBtn").onclick = prevRotation;
-function prevRotation(){
-    players.unshift(players.pop());
-    setNewPosition();
-    console.log("prev rotation");
-    
-}
-
-document.getElementById("reset").onclick = reset;
-function reset(){
-    setNewPosition();
-}
-
-document.getElementById("nextBtn").onclick = nextRotation;
-function nextRotation(){
-    players.push(players.shift());
-    setNewPosition();
-    console.log("next rotation");
 }
 
 function resetColor(){
